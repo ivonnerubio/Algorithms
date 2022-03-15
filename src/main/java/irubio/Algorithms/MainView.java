@@ -17,43 +17,50 @@ public class MainView extends VerticalLayout {
 
     int[] generated_array;
     public MainView(){
+        HorizontalLayout horizontal = new HorizontalLayout ();
         Button newArray = new Button("Generate New Array");
+        newArray.setSizeFull();
         newArray.addClickListener(click -> {
-            generateArray();
+            remove(horizontal);
             generated_array = generateArray();
-            add(new H1(Arrays.toString(generated_array)));
+            horizontal.add(new H1(Arrays.toString(generated_array)));
+            //add(new H1(Arrays.toString(generated_array)));
+            add(horizontal);
+
         });
-        mainController cont = new mainController("ivonne");
-        cont.testIvonne();
+
         Button bubbleButton = new Button("Bubble Sort");
         bubbleButton.addClickListener(click -> {
-            add(new H1(Arrays.toString(bubbleSort(generated_array))));
+            generated_array = bubbleSort(generated_array);
+
         });
-        Button insertButton = new Button("Insertion Sort");
-        insertButton.addClickListener(click -> {
-            add(new H1(Arrays.toString(insertSort(generated_array))));
-        });
-        Button quickButton = new Button("Quick Sort");
+
+        Button insertButton = new Button("Insert Sort");
 
 
 
-        VerticalLayout vertical = new VerticalLayout();
-        vertical.add(bubbleButton, insertButton, quickButton,new H1(cont.testIvonne()));
+
+        HorizontalLayout algLayout = new HorizontalLayout();
+        algLayout.add(bubbleButton,insertButton);
 
 
-        HorizontalLayout horizontal = new HorizontalLayout ();
-        horizontal.add(vertical, newArray);
-        add(horizontal, new H1(Arrays.toString(generateArray())));
 
+        add(newArray, algLayout, horizontal);
 
 
 
 
 
 
+        mainController cont = new mainController("ivonne");
+        cont.testIvonne();
 
 
     }
+
+
+
+
 
     @RequestMapping("/main")
     public String example(){
@@ -96,3 +103,4 @@ public class MainView extends VerticalLayout {
         array[j] = temp;
     }
 }
+
