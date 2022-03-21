@@ -1,7 +1,8 @@
 package irubio.Algorithms;
 
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
@@ -11,31 +12,34 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.Arrays;
 import java.util.Random;
 
-@Route("")
+
+@Route("main")
+@RequestMapping("/main")
 @PageTitle("Algorithm Visualizer")
 public class MainView extends VerticalLayout {
 
+    VerticalLayout verticalLayout = new VerticalLayout ();
+    HorizontalLayout horizontalLayout = new HorizontalLayout();
     int[] generated_array;
+
     public MainView(){
-        HorizontalLayout horizontal = new HorizontalLayout ();
+        verticalLayout.setAlignItems(Alignment.CENTER);
         Button newArray = new Button("Generate New Array");
         newArray.setSizeFull();
         newArray.addClickListener(click -> {
-            remove(horizontal);
             generated_array = generateArray();
-            horizontal.add(new H1(Arrays.toString(generated_array)));
-            //add(new H1(Arrays.toString(generated_array)));
-            add(horizontal);
-
+            printArray(generated_array);
         });
 
         Button bubbleButton = new Button("Bubble Sort");
         bubbleButton.addClickListener(click -> {
-            generated_array = bubbleSort(generated_array);
-
+                bubbleSort();
         });
 
         Button insertButton = new Button("Insert Sort");
+        insertButton.addClickListener(click ->{
+           // clearLayout(horizontal);
+        });
 
 
 
@@ -45,39 +49,56 @@ public class MainView extends VerticalLayout {
 
 
 
-        add(newArray, algLayout, horizontal);
+        add(newArray, algLayout, verticalLayout);
+    }
 
 
-
-
-
-
-        mainController cont = new mainController("ivonne");
-        cont.testIvonne();
-
-
+    public void clearLayout(HorizontalLayout oldLayout){
+        HorizontalLayout newLayout= new HorizontalLayout();
+        oldLayout.removeAll();
+        replace(oldLayout, newLayout);
     }
 
 
 
+    public void bubbleSort(){
+    //    printArray(generated_array);
 
+        int[] sortedArray = generated_array.clone();
+        // BUBBLE ALGORITHM START
+        for(int lastUnsortedIndex = sortedArray.length-1; lastUnsortedIndex > 0; lastUnsortedIndex--) {
+            for (int i = 0; i < lastUnsortedIndex; i++) {
+                if (sortedArray[i] > sortedArray[i + 1]) {
+                    HorizontalLayout temp = new HorizontalLayout();
+                    temp.add(new H2(String.valueOf(sortedArray[i])));
+                    temp.add(new H2(">"));
+                    temp.add(new H2(String.valueOf(sortedArray[i+1])));
+                    verticalLayout.add(temp);
 
-    @RequestMapping("/main")
-    public String example(){
-        return "main";
-    }
+                    //printArray(sortedArray);
+                 //   horizontalLayout.add(new H2(String.valueOf(sortedArray[i+1])));
+                    swap(sortedArray, i, i + 1);
 
-
-    public int[] bubbleSort(int[] input){
-        for(int i=0; i< input.length; i++){
-            for(int j=0; j<input.length;j++){
-                if(input[i] < input[j]){
-                    swap(input, i, j);
+                  //  printArray(sortedArray);
                 }
+                verticalLayout.add(new H2(Arrays.toString(sortedArray)));
+             //   verticalLayout.add(new H2(Arrays.toString(sortedArray)));
             }
+            // BUBBLE ALGORITHM END
+
         }
-        return input;
     }
+
+    public void printArray(int[] input){
+        verticalLayout.removeAll();
+        horizontalLayout.removeAll();
+        for(int num: input){
+            horizontalLayout.add(new H2(String.valueOf(num)));
+        }
+        verticalLayout.add(horizontalLayout);
+
+    }
+
 
     public int[] insertSort(int[] input){
         return input;
@@ -85,7 +106,7 @@ public class MainView extends VerticalLayout {
 
 
     public int[] generateArray(){
-        int[] inputArray = new int[10];
+        int[] inputArray = new int[5];
         Random rd = new Random();
         for(int i=0; i<inputArray.length; i++){
             inputArray[i] = rd.nextInt(100);
